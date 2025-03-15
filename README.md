@@ -1,6 +1,6 @@
 # Gerenciador de Tarefas
 
-Este é um projeto de exemplo para gerenciamento de tarefas, com controle de usuários para administradores. A aplicação permite que os usuários criem, atualizem, removam e listem tarefas. O administrador tem a capacidade de gerenciar todos os usuários do sistema.
+Este é um projeto de exemplo para gerenciamento de tarefas, com controle de usuários para administradores. A aplicação permite que os usuários criem, atualizem, removam, concluam e listem tarefas. O administrador tem a capacidade de gerenciar todos os usuários do sistema.
 
 ## Planejamento do Projeto
 
