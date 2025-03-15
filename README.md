@@ -2,6 +2,12 @@
 
 Este é um projeto de exemplo para gerenciamento de tarefas, com controle de usuários para administradores. A aplicação permite que os usuários criem, atualizem, removam e listem tarefas. O administrador tem a capacidade de gerenciar todos os usuários do sistema.
 
+## Planejamento do Projeto
+
+Antes de iniciar o desenvolvimento, foi realizado um planejamento das funcionalidades e arquitetura do sistema:
+
+![Planejamento do Sistema](planejamento-sistema-gestao.png)
+
 ## Funcionalidades
 
 - **Cadastro e Login**: Usuários podem se registrar e fazer login no sistema.
