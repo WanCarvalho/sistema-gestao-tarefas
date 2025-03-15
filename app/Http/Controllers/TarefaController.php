@@ -14,7 +14,7 @@ class TarefaController extends Controller
     {
         try {
             $tarefas = Tarefa::query()
-                ->where('user_id', Auth::id())
+                // ->where('user_id', Auth::id())
                 ->paginate(10);
 
             return view('tarefa.index', [
