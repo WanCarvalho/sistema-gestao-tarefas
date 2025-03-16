@@ -15,6 +15,7 @@ class TarefaController extends Controller
         try {
             $tarefas = Tarefa::query()
                 // ->where('user_id', Auth::id())
+                ->orderBy('created_at', 'DESC')
                 ->paginate(10);
 
             return view('tarefa.index', [
@@ -25,15 +26,27 @@ class TarefaController extends Controller
         }
     }
 
+    public function create()
+    {
+        return view('tarefa.create');
+    }
+
+    public function edit(Tarefa $tarefa)
+    {
+        return view('tarefa.create', [
+            'tarefa' => $tarefa,
+        ]);
+    }
+
     public function store(TarefaRequest $request)
     {
         try {
             Tarefa::query()
-                ->create($request->toArray());
+                ->create($request->validated());
 
             return redirect()->route('tarefas.index')->with('success', 'Tarefa cadastrada com sucesso!');
         } catch (Exception $e) {
-            return back()->with('error', 'Erro ao cadastrar tarefa: ' . $e->getMessage());
+            return redirect()->route('tarefas.store')->withInput()->with('error', 'Erro ao cadastrar tarefa: ' . $e->getMessage());
         }
     }
 
