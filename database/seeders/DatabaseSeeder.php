@@ -16,25 +16,8 @@ class DatabaseSeeder extends Seeder
         // Executa o seeder de permissões primeiro
         $this->call([
             PermissionsSeeder::class,
+            UserSeeder::class,
+            TarefaSeeder::class,
         ]);
-
-        $admin = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-        ]);
-
-        $gestor = User::factory()->create([
-            'name' => 'Gestor',
-            'email' => 'gestor@gestor.com',
-        ]);
-
-        $membro = User::factory()->create([
-            'name' => 'Membro',
-            'email' => 'membro@membro.com',
-        ]);
-
-        $admin->assignRole('admin');
-        $gestor->assignRole('gestor');
-        $membro->assignRole('membro');
     }
 }
