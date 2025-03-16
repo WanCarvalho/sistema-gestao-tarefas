@@ -12,9 +12,18 @@ class TarefaPolicy
         return $user->hasPermissionTo('tarefa.create');
     }
 
+    public function edit(User $user, Tarefa $tarefa)
+    {
+        return $user->hasPermissionTo('tarefa.edit');
+    }
+
     public function view(User $user, Tarefa $tarefa)
     {
         return $user->hasPermissionTo('tarefa.view');
+    }
+
+    public function store(User $user) {
+        return $user->hasPermissionTo('tarefa.store');
     }
 
     public function update(User $user, Tarefa $tarefa)
