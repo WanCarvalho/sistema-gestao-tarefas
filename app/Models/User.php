@@ -51,4 +51,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tarefa::class);
     }
+
+    public function equipes()
+    {
+        return $this->belongsToMany(Equipe::class)->withPivot('role');
+    }
+
+    public function isGestorOf(Equipe $equipe)
+    {
+        return $this->equipes()->wherePivot('role', 'gestor')->where('equipe_id', $equipe->id)->exists();
+    }
+
+    public function isMembroOf(Equipe $equipe)
+    {
+        return $this->equipes()->wherePivot('role', 'membro')->where('equipe_id', $equipe->id)->exists();
+    }
 }
