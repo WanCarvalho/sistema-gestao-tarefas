@@ -40,10 +40,24 @@ class Tarefa extends Model
     {
         parent::boot();
 
-        static::creating(function (Tarefa $model) {
-            $model->user_id = Auth::id();
-            $model->status = StatusTarefaEnum::EM_ANDAMENTO;
-        });
+        if (!app()->runningInConsole()) {  // Verifica se não está rodando no console
+            static::creating(function (Tarefa $model) {
+                // Verifica se há um usuário logado
+                if (Auth::check()) {
+                    $model->user_id = Auth::id();  // Usuario logado que cria a tarefa
+                } else {
+                    // Caso não tenha um usuário logado, use um usuário de fallback (exemplo, id 1)
+                    $model->user_id = 1; // Ou qualquer id válido de usuário no seu sistema
+                }
+
+                $model->status = StatusTarefaEnum::EM_ANDAMENTO;
+
+                // Verifica se não há responsável e atribui o responsável
+                if (!$model->responsavel_id) {
+                    $model->responsavel_id = $model->user_id; // Ou qualquer outro critério
+                }
+            });
+        }
     }
 
     public function user(): BelongsTo
