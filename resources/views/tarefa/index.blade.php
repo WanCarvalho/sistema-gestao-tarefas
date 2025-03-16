@@ -9,7 +9,9 @@
                 <div class="p-6 text-gray-900">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="h5">Listar</h3>
-                        <a href="{{ route('tarefas.create') }}" class="btn btn-primary">Criar Tarefa</a>
+                        @if (Auth::user()->can('tarefa.create'))
+                            <a href="{{ route('tarefas.create') }}" class="btn btn-primary">Criar Tarefa</a>
+                        @endif
                     </div>
 
                     <div class="my-4">
@@ -35,17 +37,26 @@
                                                 <td>{{ ucfirst($tarefa->prioridade) }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($tarefa->prazo_final)->format('d/m/Y') }}</td>
                                                 <td>
-                                                    <form action="{{ route('tarefas.concluir', $tarefa->slug) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja concluir esta tarefa?');">
+                                                    <form action="{{ route('tarefas.concluir', $tarefa->slug) }}"
+                                                        method="POST" class="d-inline"
+                                                        onsubmit="return confirm('Tem certeza que deseja concluir esta tarefa?');">
                                                         @csrf
                                                         @method('PUT')
-                                                        <button type="submit" class="btn btn-success btn-sm">Concluir</button>
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm">Concluir</button>
                                                     </form>
-                                                    <a href="{{ route('tarefas.edit', $tarefa->slug) }}" class="btn btn-warning btn-sm">Editar</a>
-                                                    <form action="{{ route('tarefas.delete', $tarefa->slug) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                                                    </form>
+                                                    <a href="{{ route('tarefas.edit', $tarefa->slug) }}"
+                                                        class="btn btn-warning btn-sm">Editar</a>
+                                                    @if (Auth::user()->can('tarefa.delete'))
+                                                        <form action="{{ route('tarefas.delete', $tarefa->slug) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-danger btn-sm">Excluir</button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

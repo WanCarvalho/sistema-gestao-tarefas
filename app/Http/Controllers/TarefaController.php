@@ -7,12 +7,15 @@ use App\Http\Requests\TarefaRequest;
 use App\Models\Tarefa;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TarefaController extends Controller
 {
     public function index()
     {
         try {
+            Gate::authorize('tarefa.view');
+
             $tarefas = Tarefa::query()
                 // ->where('user_id', Auth::id())
                 ->orderBy('created_at', 'DESC')
@@ -28,11 +31,15 @@ class TarefaController extends Controller
 
     public function create()
     {
+        Gate::authorize('tarefa.create');
+
         return view('tarefa.create');
     }
 
     public function edit(Tarefa $tarefa)
     {
+        Gate::authorize('tarefa.edit');
+
         return view('tarefa.create', [
             'tarefa' => $tarefa,
         ]);
@@ -41,6 +48,8 @@ class TarefaController extends Controller
     public function store(TarefaRequest $request)
     {
         try {
+            Gate::authorize('tarefa.store');
+
             Tarefa::query()
                 ->create($request->validated());
 
@@ -53,6 +62,8 @@ class TarefaController extends Controller
     public function update(TarefaRequest $request, Tarefa $tarefa)
     {
         try {
+            Gate::authorize('tarefa.update');
+
             // Verifica se o usuário autenticado é o dono da tarefa
             if ($tarefa->user_id !== Auth::id()) {
                 return back()->with('error', 'Você não tem permissão para editar esta tarefa.');
@@ -69,6 +80,8 @@ class TarefaController extends Controller
     public function delete(Tarefa $tarefa)
     {
         try {
+            Gate::authorize('tarefa.delete');
+
             // Verifica se o usuário autenticado é o dono da tarefa
             if ($tarefa->user_id !== Auth::id()) {
                 return back()->with('error', 'Você não tem permissão para excluir esta tarefa.');
@@ -85,6 +98,8 @@ class TarefaController extends Controller
     public function concluir(Tarefa $tarefa)
     {
         try {
+            Gate::authorize('tarefa.concluir');
+
             // Verifica se o usuário autenticado é o dono da tarefa
             if ($tarefa->user_id !== Auth::id()) {
                 return back()->with('error', 'Você não tem permissão para concluir esta tarefa.');
