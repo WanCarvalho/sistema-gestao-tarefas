@@ -2,42 +2,93 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Equipe;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class EquipeController extends Controller
 {
     public function index()
     {
-        // listar equipes que o usuário é gestor
+        try {
+            Gate::authorize('equipe.view');
+
+            $user = User::find(Auth::id());
+
+            // Se o usuário for admin, retorna todas as equipes
+            if ($user->hasRole('admin')) {
+                $equipes = Equipe::query()->paginate(9);
+            } else {
+                // Caso contrário, retorna apenas as equipes onde ele é gestor
+                $equipes = $user->equipes()->wherePivot('role', 'gestor')->paginate(10);
+            }
+
+            return view('equipes.index', [
+                'equipes' => $equipes,
+            ]);
+        } catch (Exception $e) {
+            return back()->with('error', 'Erro ao carregar as equipes: ' . $e->getMessage());
+        }
     }
+
 
     public function show()
     {
-        // mostrar informações sobre as equipes
+        try {
+            //
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 
     public function create()
     {
-        // form para criar equipes
+        try {
+            //
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 
     public function store()
     {
-        // rota para armazenar equipe
+        try {
+            //
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 
     public function update()
     {
-        // rota para atualizar informações sobre equipes
+        try {
+            //
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 
     public function edit()
     {
-        // form para editar equipes
+        try {
+            //
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 
-    public function delete()
+    public function delete(Equipe $equipe)
     {
-        // deletar equipe
+        try {
+            Gate::authorize('equipe.delete');
+
+            $equipe->delete();
+
+            return redirect()->route('equipes.index')->with('success', 'Equipe excluída com sucesso!');
+        } catch (Exception $e) {
+            return back()->with('error', '' . $e->getMessage());
+        }
     }
 }

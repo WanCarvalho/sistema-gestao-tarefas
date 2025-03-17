@@ -18,6 +18,9 @@ Route::middleware('auth')->group(function () {
 
     // Importa o conjunto de rotas das tarefas
     Route::group([], base_path('routes/tarefas.php'));
+
+    // Importa o conjunto de rotas das equipes
+    Route::group([], base_path('routes/equipes.php'));
 });
 
 require __DIR__ . '/auth.php';
