@@ -17,6 +17,8 @@
                     <div class="card-body">
                         <h5 class="card-title">#{{ $equipe->id }} - {{ $equipe->nome }}</h5>
                         <div class="d-flex justify-content-end">
+                            <a href="{{ route('equipes.show', $equipe->id) }}"
+                                class="btn btn-info btn-sm mr-2">Visualizar</a>
                             <a href="{{ route('equipes.edit', $equipe->id) }}"
                                 class="btn btn-warning btn-sm mr-2">Editar</a>
                             @if (Auth::user()->can('equipe.delete'))

@@ -34,12 +34,24 @@ class EquipeController extends Controller
     }
 
 
-    public function show()
+    public function show(Equipe $equipe)
     {
         try {
-            //
+            Gate::authorize('equipe.view');
+
+            // Buscar todos os membros
+            $membros = $equipe->membros()->wherePivot('role', 'membro')->get();
+
+            // Buscar todos os gestores
+            $gestores = $equipe->gestores()->wherePivot('role', 'gestor')->get();
+
+            return view('equipes.show', [
+                'equipe' => $equipe,
+                'membros' => $membros,
+                'gestores' => $gestores,
+            ]);
         } catch (Exception $e) {
-            return back()->with('error', '' . $e->getMessage());
+            return back()->with('error', 'Erro ao carregar a equipe: ' . $e->getMessage());
         }
     }
 
