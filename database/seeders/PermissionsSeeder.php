@@ -56,6 +56,7 @@ class PermissionsSeeder extends Seeder
         ]);
         $membro->syncPermissions([
             'tarefa.view',
+            'tarefa.edit',
             'tarefa.concluir'
         ]);
     }
