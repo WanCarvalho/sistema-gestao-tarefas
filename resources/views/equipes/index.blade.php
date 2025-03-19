@@ -19,8 +19,6 @@
                         <div class="d-flex justify-content-end">
                             <a href="{{ route('equipes.show', $equipe->id) }}"
                                 class="btn btn-info btn-sm mr-2">Visualizar</a>
-                            <a href="{{ route('equipes.edit', $equipe->id) }}"
-                                class="btn btn-warning btn-sm mr-2">Editar</a>
                             @if (Auth::user()->can('equipe.delete'))
                                 <form action="{{ route('equipes.delete', $equipe->id) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('Tem certeza que deseja excluir esta equipe?');">

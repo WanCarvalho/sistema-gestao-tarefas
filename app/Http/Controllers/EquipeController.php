@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EquipeRequest;
 use App\Models\Equipe;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 
 class EquipeController extends Controller
 {
@@ -58,25 +60,38 @@ class EquipeController extends Controller
     public function create()
     {
         try {
-            //
+            Gate::authorize('equipe.create');
+
+            return view('equipes.create');
         } catch (Exception $e) {
             return back()->with('error', '' . $e->getMessage());
         }
     }
 
-    public function store()
+    public function store(EquipeRequest $request)
     {
         try {
-            //
+            Gate::authorize('equipe.create');
+
+            $equipe = Equipe::create($request->validated());
+
+            // Adiciona o usuário autenticado como gestor da equipe
+            $equipe->membros()->attach(Auth::id(), ['role' => 'gestor']);
+
+            return redirect()->route('equipes.index')->with('success', 'Equipe criada com sucesso!');
         } catch (Exception $e) {
             return back()->with('error', '' . $e->getMessage());
         }
     }
 
-    public function update()
+    public function update(EquipeRequest $request, Equipe $equipe)
     {
         try {
-            //
+            Gate::authorize('equipe.update');
+
+            $equipe->update($request->validated());
+
+            return redirect()->route('equipes.index')->with('success', 'Equipe atualizada com sucesso!');
         } catch (Exception $e) {
             return back()->with('error', '' . $e->getMessage());
         }
@@ -85,7 +100,9 @@ class EquipeController extends Controller
     public function edit()
     {
         try {
-            //
+            Gate::authorize('equipe.update');
+
+            return view('equipes.edit', compact('equipe'));
         } catch (Exception $e) {
             return back()->with('error', '' . $e->getMessage());
         }
@@ -102,5 +119,73 @@ class EquipeController extends Controller
         } catch (Exception $e) {
             return back()->with('error', '' . $e->getMessage());
         }
+    }
+
+    // Exibir o formulário para adicionar membro
+    public function createMembro(Equipe $equipe)
+    {
+        Gate::authorize('equipe.update');
+
+        $usuarios = User::all(); // Buscar todos os usuários disponíveis
+
+        return view('equipes.membros.create', compact('equipe', 'usuarios'));
+    }
+
+    // Salvar novo membro na equipe
+    public function storeMembro(Request $request, Equipe $equipe)
+    {
+        Gate::authorize('equipe.update');
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $equipe->membros()->attach($request->input('user_id'), ['role' => 'membro']);
+
+        return redirect()->route('equipes.show', $equipe)->with('success', 'Membro adicionado com sucesso!');
+    }
+
+    // Remover membro da equipe
+    public function destroyMembro(Equipe $equipe, User $membro)
+    {
+        Gate::authorize('equipe.update');
+
+        $equipe->membros()->detach($membro->id);
+
+        return redirect()->route('equipes.show', $equipe)->with('success', 'Membro removido com sucesso!');
+    }
+
+    // Exibir o formulário para adicionar gestor
+    public function createGestor(Equipe $equipe)
+    {
+        Gate::authorize('equipe.update');
+
+        $usuarios = User::all();
+
+        return view('equipes.gestores.create', compact('equipe', 'usuarios'));
+    }
+
+    // Salvar novo gestor na equipe
+    public function storeGestor(Request $request, Equipe $equipe)
+    {
+        Gate::authorize('equipe.update');
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $equipe->gestores()->attach($request->input('user_id'), ['role' => 'gestor']);
+
+        return redirect()->route('equipes.show', $equipe)->with('success', 'Gestor adicionado com sucesso!');
+    }
+
+    // Remover gestor da equipe
+    public function destroyGestor(Equipe $equipe, User $gestor)
+    {
+        Gate::authorize('equipe.update');
+
+        $equipe->gestores()->detach($gestor->id);
+
+        return redirect()->route('equipes.show', $equipe)->with('success', 'Gestor removido com sucesso!');
     }
 }
