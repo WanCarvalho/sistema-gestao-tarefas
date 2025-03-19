@@ -59,13 +59,9 @@ class EquipeController extends Controller
 
     public function create()
     {
-        try {
-            Gate::authorize('equipe.create');
+        Gate::authorize('equipe.create');
 
-            return view('equipes.create');
-        } catch (Exception $e) {
-            return back()->with('error', '' . $e->getMessage());
-        }
+        return view('equipes.create');
     }
 
     public function store(EquipeRequest $request)
