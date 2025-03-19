@@ -70,7 +70,15 @@
 
         <!-- Page Content -->
         <main>
-            @yield('content')
+            <div class="py-12">
+                <div class="container-fluid pr-6 pl-6">
+                    <div class="bg-white overflow-hidden shadow-sm rounded">
+                        <div class="p-6 text-gray-900">
+                            @yield('content')
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </body>
