@@ -6,7 +6,7 @@ Este é um projeto de exemplo para gerenciamento de tarefas, com controle de usu
 
 Antes de iniciar o desenvolvimento, foi realizado um planejamento das funcionalidades e arquitetura do sistema:
 
-![Planejamento do Sistema]([https://raw.githubusercontent.com/WanCarvalho/sistema-gestao-tarefas/refs/heads/documentacao/planejamento_sistema_gestao.png?token=GHSAT0AAAAAADAJMNVPSJGXG3HGJDKPIZWCZ6WCJIA](https://github.com/WanCarvalho/sistema-gestao-tarefas/blob/main/planejamento_sistema_gestao.png))
+![Planejamento do Sistema](planejamento_sistema_gestao.png)
 
 ## Funcionalidades
 
