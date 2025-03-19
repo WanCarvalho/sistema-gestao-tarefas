@@ -26,7 +26,11 @@ class PermissionsSeeder extends Seeder
             'tarefa.update',
             'tarefa.delete',
             'tarefa.concluir',
-            'gerenciar.usuarios'
+            'gerenciar.usuarios',
+            'usuario.view',
+            'usuario.create',
+            'usuario.update',
+            'usuario.delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -52,6 +56,7 @@ class PermissionsSeeder extends Seeder
         ]);
         $membro->syncPermissions([
             'tarefa.view',
+            'tarefa.edit',
             'tarefa.concluir'
         ]);
     }

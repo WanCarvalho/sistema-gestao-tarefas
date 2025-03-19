@@ -10,6 +10,36 @@
         @endif
     </div>
 
+    <!-- Filtro de Tarefas -->
+    <div class="my-4">
+        <form action="{{ route('tarefas.index') }}" method="GET">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" name="status" id="status">
+                        <option value="">Todos</option>
+                        <option value="em-andamento" {{ request('status') == 'em-andamento' ? 'selected' : '' }}>Em Andamento</option>
+                        <option value="concluida" {{ request('status') == 'concluida' ? 'selected' : '' }}>Concluído</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="prioridade" class="form-label">Prioridade</label>
+                    <select class="form-select" name="prioridade" id="prioridade">
+                        <option value="">Todas</option>
+                        <option value="baixa" {{ request('prioridade') == 'baixa' ? 'selected' : '' }}>Baixa</option>
+                        <option value="media" {{ request('prioridade') == 'media' ? 'selected' : '' }}>Média</option>
+                        <option value="alta" {{ request('prioridade') == 'alta' ? 'selected' : '' }}>Alta</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <!-- Botão para limpar os filtros -->
+                    <a href="{{ route('tarefas.index') }}" class="btn btn-secondary ms-2">Limpar Filtros</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="my-4">
         <div class="card shadow">
             <div class="card-body">

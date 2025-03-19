@@ -5,24 +5,58 @@ namespace App\Http\Controllers;
 use App\Enums\StatusTarefaEnum;
 use App\Http\Requests\TarefaRequest;
 use App\Models\Tarefa;
+use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class TarefaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
             Gate::authorize('tarefa.view');
 
-            $tarefas = Tarefa::query()
-                // ->where('user_id', Auth::id())
-                ->orderBy('created_at', 'DESC')
-                ->paginate(10);
+            $user = User::find(Auth::id());  // Obtém o usuário autenticado
+
+            // Filtragem por parâmetros
+            $statusFilter = $request->input('status');
+            $prioridadeFilter = $request->input('prioridade');
+
+            // Inicializa a consulta para todas as tarefas
+            $tarefasQuery = Tarefa::query();
+
+            // Se o usuário for admin, retorna todas as tarefas
+            if ($user->hasRole('admin')) {
+                // Não é necessário filtrar pela equipe aqui, então deixamos a consulta como está
+            }
+            // Se o usuário for gestor, retorna as tarefas das equipes que ele gerencia
+            elseif ($user->hasRole('gestor')) {
+                $tarefasQuery->whereIn('user_id', $user->equipes->pluck('user_id'))  // Busca tarefas dos membros das equipes que o gestor gerencia
+                    ->orWhere('user_id', $user->id);  // Adiciona as tarefas do gestor
+            }
+            // Se o usuário for membro, retorna apenas as suas próprias tarefas
+            else {
+                $tarefasQuery->where('responsavel_id', $user->id);  // Filtra as tarefas do usuário logado
+            }
+
+            // Aplica os filtros usando 'when'
+            $tarefasQuery->when($statusFilter, function ($query) use ($statusFilter) {
+                return $query->where('status', $statusFilter);
+            });
+
+            $tarefasQuery->when($prioridadeFilter, function ($query) use ($prioridadeFilter) {
+                return $query->where('prioridade', $prioridadeFilter);
+            });
+
+            // Ordena as tarefas e aplica a paginação
+            $tarefas = $tarefasQuery->orderBy('created_at', 'DESC')->paginate(10);
 
             return view('tarefa.index', [
-                'tarefas' => $tarefas
+                'tarefas' => $tarefas,
+                'statusFilter' => $statusFilter,
+                'prioridadeFilter' => $prioridadeFilter,
             ]);
         } catch (Exception $e) {
             return back()->with('error', 'Erro ao carregar as tarefas: ' . $e->getMessage());
@@ -33,15 +67,24 @@ class TarefaController extends Controller
     {
         Gate::authorize('tarefa.create');
 
-        return view('tarefa.create');
+        $user = User::find(Auth::id());
+        $usuarios = $user->equipes()->with('membros')->get()->pluck('membros')->flatten();  // Obtemos os membros das equipes que o gestor gerencia
+
+        return view('tarefa.create', [
+            'usuarios' => $usuarios,
+        ]);
     }
 
     public function edit(Tarefa $tarefa)
     {
         Gate::authorize('tarefa.edit');
 
+        $user = User::find(Auth::id());
+        $usuarios = $user->equipes()->with('membros')->get()->pluck('membros')->flatten();  // Obtemos os membros das equipes que o gestor gerencia
+
         return view('tarefa.create', [
             'tarefa' => $tarefa,
+            'usuarios' => $usuarios,
         ]);
     }
 
@@ -101,7 +144,7 @@ class TarefaController extends Controller
             Gate::authorize('tarefa.concluir');
 
             // Verifica se o usuário autenticado é o dono da tarefa
-            if ($tarefa->user_id !== Auth::id()) {
+            if ($tarefa->user_id !== Auth::id() && $tarefa->responsavel_id !== Auth::id()) {
                 return back()->with('error', 'Você não tem permissão para concluir esta tarefa.');
             }
 
