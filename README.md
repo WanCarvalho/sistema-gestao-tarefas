@@ -79,3 +79,11 @@ npm run dev
 ```bash
 php artisan serve
 ```
+
+## Itens Atendidos
+
+a) Criar uma aplicação web utilizando PHP usando o Framework Laravel.
+b) Utilizar persistência em um banco de dados Postegres SQL.
+c) Utilizar Eloquent ORM
+d) Utilizar Bootstrap
+
