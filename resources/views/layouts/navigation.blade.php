@@ -15,12 +15,20 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
                     <x-nav-link :href="route('tarefas.index')" :active="request()->routeIs('tarefas*')">
                         {{ __('Tarefas') }}
                     </x-nav-link>
+
                     @if (Auth::user()->can('equipe.view'))
                         <x-nav-link :href="route('equipes.index')" :active="request()->routeIs('equipes*')">
                             {{ __('Equipes') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if (Auth::user()->can('usuario.view'))
+                        <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios*')">
+                            {{ __('Usuários') }}
                         </x-nav-link>
                     @endif
                 </div>

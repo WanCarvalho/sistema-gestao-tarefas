@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('equipes')->controller(EquipeController::class)->group(function () {
     Route::get('/', 'index')->name('equipes.index');
-    Route::get('/{equipe:id}', 'show')->name('equipes.show');
+    Route::get('/visualizar/{equipe:id}', 'show')->name('equipes.show');
     Route::get('/create', 'create')->name('equipes.create');
     Route::post('/', 'store')->name('equipes.store');
     Route::put('/update/{equipe:id}', 'update')->name('equipes.update');
